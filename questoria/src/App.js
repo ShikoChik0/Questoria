@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { 
-  School, User, LayoutDashboard, ChevronRight, ArrowLeft, 
-  Lock, AlertCircle, LogOut, MessageSquare, BookOpen, 
-  Search, PlusCircle, Trash2, CheckCircle, ArrowUp, X,
-  BarChart3, Hash, CheckSquare
+  User, LayoutDashboard, ChevronRight, ArrowLeft,
+  LogOut, MessageSquare, BookOpen, 
+  Search, PlusCircle, Trash2, CheckCircle,
+  Hash, CheckSquare
 } from 'lucide-react';
 
 const SUBJECTS = [
