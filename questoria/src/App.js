@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, LayoutDashboard, ChevronRight, ArrowLeft,
   LogOut, MessageSquare, BookOpen, 
@@ -212,9 +213,18 @@ export default function App() {
   if (!currentUser) {
     return (
       <div className="min-h-screen bg-slate-200 flex items-center justify-center p-4 font-sans">
-        <div className="max-w-md w-full bg-[#f8fafc] rounded-[40px] shadow-2xl p-10 border border-white/50 relative overflow-hidden">
-          {loginStep === 'selection' ? (
-            <div className="text-center space-y-8">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-md w-full bg-[#f8fafc] rounded-[40px] shadow-2xl p-10 border border-white/50 relative overflow-hidden">
+          <AnimatePresence mode="wait">
+            {loginStep === 'selection' ? (
+            <motion.div 
+              key="selection"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              className="text-center space-y-8">
               <div className="flex justify-center">
                 <div className="flex flex-col items-center space-y-2">
                   <img 
@@ -226,7 +236,9 @@ export default function App() {
               </div>
 
               <div className="space-y-4">
-                <button 
+                <motion.button 
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => { setLoginRole(ROLES.STUDENT); setLoginStep('login'); }}
                   className="w-full group flex items-center p-5 bg-white/60 hover:bg-white rounded-3xl border border-slate-200 transition-all text-left shadow-sm"
                 >
@@ -236,9 +248,11 @@ export default function App() {
                     <p className="text-xs text-slate-400">Learn together</p>
                   </div>
                   <ChevronRight size={20} className="text-slate-300" />
-                </button>
+                </motion.button>
 
-                <button 
+                <motion.button 
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => { setLoginRole(ROLES.TEACHER); setLoginStep('login'); }}
                   className="w-full group flex items-center p-5 bg-white/60 hover:bg-white rounded-3xl border border-slate-200 transition-all text-left shadow-sm"
                 >
@@ -248,11 +262,17 @@ export default function App() {
                     <p className="text-xs text-slate-400">Validate knowledge</p>
                   </div>
                   <ChevronRight size={20} className="text-slate-300" />
-                </button>
+                </motion.button>
               </div>
-            </div>
+            </motion.div>
           ) : (
-            <div className="animate-in slide-in-from-right-4 duration-300">
+            <motion.div 
+              key="login"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="duration-300"
+            >
               <button 
                 onClick={() => { setLoginStep('selection'); setLoginError(''); }}
                 className="flex items-center text-slate-500 hover:text-indigo-600 text-xs font-black uppercase tracking-widest mb-6"
@@ -270,11 +290,16 @@ export default function App() {
                   <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl outline-none" required />
                 </div>
                 {loginError && <p className="text-red-500 text-xs font-bold">{loginError}</p>}
-                <button type="submit" className="w-full py-4 bg-indigo-600 text-white rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl">Authenticate</button>
+                <motion.button 
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="submit" 
+                  className="w-full py-4 bg-indigo-600 text-white rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl">Authenticate</motion.button>
               </form>
-            </div>
+            </motion.div>
           )}
-        </div>
+          </AnimatePresence>
+        </motion.div>
       </div>
     );
   }
@@ -290,12 +315,20 @@ export default function App() {
             </div>
 
           <nav className="space-y-1 mb-8">
-            <button onClick={() => { setActiveTab('forum'); setViewingQuestion(null); }} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-2xl font-bold transition-all ${activeTab === 'forum' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-500 hover:bg-slate-50'}`}>
+            <motion.button 
+              whileHover={{ x: 4 }}
+              onClick={() => { setActiveTab('forum'); setViewingQuestion(null); }} 
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-2xl font-bold transition-all ${activeTab === 'forum' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-500 hover:bg-slate-50'}`}
+            >
               <MessageSquare size={20} /><span>Forum</span>
-            </button>
-            <button onClick={() => { setActiveTab('exercise'); setViewingQuestion(null); }} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-2xl font-bold transition-all ${activeTab === 'exercise' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-500 hover:bg-slate-50'}`}>
+            </motion.button>
+            <motion.button 
+              whileHover={{ x: 4 }}
+              onClick={() => { setActiveTab('exercise'); setViewingQuestion(null); }} 
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-2xl font-bold transition-all ${activeTab === 'exercise' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-500 hover:bg-slate-50'}`}
+            >
               <BookOpen size={20} /><span>Exercises</span>
-            </button>
+            </motion.button>
           </nav>
 
           <div className="mb-10">
@@ -348,7 +381,10 @@ export default function App() {
               <p className="text-[9px] text-slate-400 font-bold uppercase">{currentUser.role}</p>
             </div>
           </div>
-          <button onClick={handleLogout} className="w-full flex items-center justify-center space-x-2 px-4 py-3 text-red-500 font-black uppercase tracking-widest text-[10px] hover:bg-red-50 rounded-xl transition-all">
+          <button 
+            onClick={handleLogout} 
+            className="w-full flex items-center justify-center space-x-2 px-4 py-3 text-red-500 font-black uppercase tracking-widest text-[10px] hover:bg-red-50 rounded-xl transition-all"
+          >
             <LogOut size={14} /><span>Sign Out</span>
           </button>
         </div>
@@ -366,9 +402,14 @@ export default function App() {
               <p className="text-[10px] font-black text-slate-400 uppercase">{currentUser.className}</p>
               <p className="text-xs font-bold text-slate-800">Active View</p>
             </div>
-            <button onClick={() => setIsModalOpen(true)} className="flex items-center space-x-2 px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg">
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsModalOpen(true)} 
+              className="flex items-center space-x-2 px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg"
+            >
               <PlusCircle size={20} /><span className="hidden sm:inline">New Post</span>
-            </button>
+            </motion.button>
           </div>
         </header>
 
@@ -437,9 +478,17 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="grid gap-6">
-                {filteredQuestions.length > 0 ? filteredQuestions.map(q => (
-                  <div key={q.id} onClick={() => setViewingQuestion(q)} className="bg-white rounded-[32px] p-8 border border-slate-100 shadow-sm hover:shadow-xl transition-all cursor-pointer group relative">
+              <motion.div layout className="grid gap-6">
+                <AnimatePresence>
+                {filteredQuestions.length > 0 ? filteredQuestions.map((q, index) => (
+                  <motion.div 
+                    key={q.id} 
+                    layout
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    onClick={() => setViewingQuestion(q)} 
+                    className="bg-white rounded-[32px] p-8 border border-slate-100 shadow-sm hover:shadow-xl transition-all cursor-pointer group relative">
                     {currentUser.role === ROLES.TEACHER && (
                       <button onClick={(e) => handleDeletePost(q.id, e)} className="absolute top-8 right-8 opacity-0 group-hover:opacity-100 p-2 text-slate-300 hover:text-red-500 transition-all">
                         <Trash2 size={18} />
@@ -458,42 +507,66 @@ export default function App() {
                         {answers.some(a => a.questionId === q.id && a.isVerified) && <CheckCircle size={14} className="text-emerald-500" />}
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 )) : (
-                  <div className="py-20 text-center border-2 border-dashed border-slate-200 rounded-[40px] bg-slate-50/50">
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="py-20 text-center border-2 border-dashed border-slate-200 rounded-[40px] bg-slate-50/50"
+                  >
                     <Search className="mx-auto text-slate-300 mb-4" size={48} />
                     <h3 className="text-lg font-black text-slate-400 uppercase tracking-widest">No resources found</h3>
                     <p className="text-slate-400">Be the first to contribute to this bank!</p>
-                  </div>
+                  </motion.div>
                 )}
-              </div>
+                </AnimatePresence>
+              </motion.div>
             </div>
           )}
         </div>
       </main>
 
       {}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
-          <div className="bg-white w-full max-w-lg rounded-[40px] p-10 shadow-2xl">
-            <h2 className="text-2xl font-black mb-8">Create New {activeTab}</h2>
-            <form onSubmit={handleCreatePost} className="space-y-6">
-              <div>
-                <label className="block text-[10px] font-black text-slate-400 uppercase mb-2">Subject Category</label>
-                <select value={newPostSubject} onChange={e => setNewPostSubject(e.target.value)} className="w-full p-4 bg-slate-50 rounded-2xl font-bold outline-none border-none">
-                  {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
-                </select>
-              </div>
-              <input type="text" value={newPostTitle} onChange={e => setNewPostTitle(e.target.value)} className="w-full p-4 bg-slate-50 rounded-2xl font-bold outline-none border-none" placeholder="Catchy title..." required />
-              <textarea value={newPostContent} onChange={e => setNewPostContent(e.target.value)} className="w-full p-4 bg-slate-50 rounded-2xl min-h-[120px] outline-none border-none" placeholder="Provide details, steps, or context..." required />
-              <div className="flex space-x-4">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-4 bg-slate-100 rounded-2xl font-bold hover:bg-slate-200 transition-colors">Cancel</button>
-                <button type="submit" className="flex-1 py-4 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-200">Publish Now</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="bg-white w-full max-w-lg rounded-[40px] p-10 shadow-2xl"
+            >
+              <h2 className="text-2xl font-black mb-8">Create New {activeTab}</h2>
+              <form onSubmit={handleCreatePost} className="space-y-6">
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase mb-2">Subject Category</label>
+                  <select value={newPostSubject} onChange={e => setNewPostSubject(e.target.value)} className="w-full p-4 bg-slate-50 rounded-2xl font-bold outline-none border-none">
+                    {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </div>
+                <input type="text" value={newPostTitle} onChange={e => setNewPostTitle(e.target.value)} className="w-full p-4 bg-slate-50 rounded-2xl font-bold outline-none border-none" placeholder="Catchy title..." required />
+                <textarea value={newPostContent} onChange={e => setNewPostContent(e.target.value)} className="w-full p-4 bg-slate-50 rounded-2xl min-h-[120px] outline-none border-none" placeholder="Provide details, steps, or context..." required />
+                <div className="flex space-x-4">
+                  <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-4 bg-slate-100 rounded-2xl font-bold hover:bg-slate-200 transition-colors">Cancel</button>
+                  <motion.button 
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="submit" 
+                    className="flex-1 py-4 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-200"
+                  >
+                    Publish Now
+                  </motion.button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
