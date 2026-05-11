@@ -1,13 +1,13 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, LayoutDashboard, ChevronRight, ArrowLeft, 
   LogOut, MessageSquare, BookOpen, Menu, X, // Added Menu and X icons
   Search, PlusCircle, Trash2, CheckCircle, 
-  Hash, CheckSquare,
+  Hash, CheckSquare, Sparkles, Award
 } from 'lucide-react';
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, onSnapshot, query, orderBy} from "firebase/firestore";
+import { getFirestore, collection, onSnapshot, query, orderBy, addDoc, deleteDoc, doc, updateDoc, serverTimestamp } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAxLyq_H1N35BmQG1izcqAqzSUVsT5M6Mk",
@@ -198,6 +198,9 @@ const INITIAL_ANSWERS = [
   }
 ];
 
+const MATH_SUBJECTS = ["MATEMATIKA", "MATEMATIKA TK. LANJUT"];
+const MATH_SYMBOLS = ['+', '−', '×', '÷', '=', '≠', '±', '√', '²', '³', '^', 'π', '∞', '≤', '≥', '(', ')', '∫', 'Σ', 'lim', '→'];
+
 export default function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [loginStep, setLoginStep] = useState('selection'); 
@@ -220,6 +223,28 @@ export default function App() {
   const [newPostSubject, setNewPostSubject] = useState(SUBJECTS[0]);
   const [answerText, setAnswerText] = useState('');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false); // State for mobile sidebar
+
+  const postContentRef = useRef(null);
+  const answerTextRef = useRef(null);
+
+  const insertSymbol = (ref, symbol, setter) => {
+    const textarea = ref.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    const before = text.substring(0, start);
+    const after = text.substring(end, text.length);
+    const newValue = before + symbol + after;
+
+    setter(newValue);
+
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + symbol.length, start + symbol.length);
+    }, 0);
+  };
 
   // Real-time synchronization with Firestore
   useEffect(() => {
@@ -300,63 +325,62 @@ export default function App() {
     setPassword('');
   };
 
-  const handleCreatePost = (e) => {
+  const handleCreatePost = async (e) => {
     e.preventDefault();
     const newPost = {
-      id: 'q' + Date.now(),
       type: activeTab,
       title: newPostTitle,
       content: newPostContent,
       subject: newPostSubject,
       author: currentUser.name,
       authorId: currentUser.id,
-      createdAt: new Date().toISOString(),
+      createdAt: serverTimestamp(),
       votes: 0,
       className: currentUser.role === ROLES.TEACHER ? 'All Classes' : currentUser.className
     };
-    setQuestions([newPost, ...questions]);
+    
+    await addDoc(collection(db, "questions"), newPost);
     setIsModalOpen(false);
     setNewPostTitle('');
     setNewPostContent('');
   };
 
-  const handleDeletePost = (id, e) => {
+  const handleDeletePost = async (id, e) => {
     if (e) e.stopPropagation();
-    // Teacher can delete anything. Student cannot (as per requirement).
     if (currentUser.role === ROLES.TEACHER) {
-      setQuestions(questions.filter(q => q.id !== id));
-      setAnswers(answers.filter(a => a.questionId !== id));
+      await deleteDoc(doc(db, "questions", id));
+      // Note: In a production app, you'd also delete associated answers
       if (viewingQuestion?.id === id) setViewingQuestion(null);
     }
   };
 
-  const handleDeleteAnswer = (answerId) => {
+  const handleDeleteAnswer = async (answerId) => {
     if (currentUser.role === ROLES.TEACHER) {
-      setAnswers(answers.filter(a => a.id !== answerId));
+      await deleteDoc(doc(db, "answers", answerId));
     }
   };
 
-  const handleVerifyAnswer = (answerId) => {
+  const handleVerifyAnswer = async (answerId) => {
     if (currentUser.role !== ROLES.TEACHER) return;
-    setAnswers(answers.map(a => 
-      a.id === answerId ? { ...a, isVerified: !a.isVerified } : a
-    ));
+    const answer = answers.find(a => a.id === answerId);
+    await updateDoc(doc(db, "answers", answerId), {
+      isVerified: !answer.isVerified
+    });
   };
 
-  const handlePostAnswer = (e) => {
+  const handlePostAnswer = async (e) => {
     e.preventDefault();
     if (!answerText.trim()) return;
     const newAns = {
-      id: 'a' + Date.now(),
       questionId: viewingQuestion.id,
       text: answerText,
       author: currentUser.name,
       authorId: currentUser.id,
       isVerified: false,
       votes: 0,
-      createdAt: new Date().toISOString(),
+      createdAt: serverTimestamp(),
     };
-    setAnswers([...answers, newAns]);
+    await addDoc(collection(db, "answers"), newAns);
     setAnswerText('');
   };
 
@@ -544,54 +568,64 @@ export default function App() {
         </div>
 
         {/* Dynamic Statistics Block */}
-        <div className="p-4 border-t border-slate-100 bg-white space-y-4">
-          <div className="bg-slate-50 rounded-2xl p-4 space-y-3">
-            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
-              {currentUser.role === ROLES.TEACHER ? 'Class Insights' : 'My Progress'}
+        <div className="p-4 border-t border-slate-100 bg-white space-y-6">
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gradient-to-br from-indigo-600 to-violet-700 rounded-[24px] p-5 text-white shadow-xl shadow-indigo-200 relative overflow-hidden group"
+          >
+            <Sparkles className="absolute -right-2 -top-2 opacity-20 group-hover:rotate-12 transition-transform" size={48} />
+            <p className="text-[10px] font-black opacity-80 uppercase tracking-[0.2em] mb-4">
+              {currentUser.role === ROLES.TEACHER ? 'Academy Insights' : 'Level Progress'}
             </p>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2 text-slate-500">
-                <Hash size={14} className="text-slate-400" />
-                <span className="text-[10px] font-black uppercase">Asked</span>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <p className="text-2xl font-black">{stats.asked}</p>
+                <p className="text-[9px] font-bold opacity-70 uppercase tracking-widest">Questions</p>
               </div>
-              <span className="text-sm font-black text-indigo-600">{stats.asked}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2 text-slate-500">
-                <MessageSquare size={14} className="text-slate-400" />
-                <span className="text-[10px] font-black uppercase">Answered</span>
+              <div className="space-y-1">
+                <p className="text-2xl font-black">{stats.answered}</p>
+                <p className="text-[9px] font-bold opacity-70 uppercase tracking-widest">Answers</p>
               </div>
-              <span className="text-sm font-black text-indigo-600">{stats.answered}</span>
             </div>
-            {/* Verified only for students */}
             {currentUser.role === ROLES.STUDENT && (
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2 text-slate-500">
-                  <CheckSquare size={14} className="text-emerald-500" />
-                  <span className="text-[10px] font-black uppercase">Verified</span>
+              <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Award size={14} className="text-yellow-400" />
+                  <span className="text-[9px] font-black uppercase">Verified Mastery</span>
                 </div>
-                <span className="text-sm font-black text-emerald-600">{stats.verified}</span>
+                <span className="text-sm font-black">{stats.verified}</span>
               </div>
             )}
-          </div>
+          </motion.div>
 
-          <div className="flex items-center space-x-3 p-3 rounded-2xl bg-white border border-slate-200 shadow-sm">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold shrink-0 ${
-              currentUser.role === ROLES.TEACHER ? 'bg-slate-100 text-slate-400' :
-              currentUser.gender === 'L' ? 'bg-blue-100 text-blue-600' : 'bg-pink-100 text-pink-600'
-            }`}>
-              {currentUser.name[0]}</div>
-            <div className="min-w-0">
-              <p className="text-xs font-black truncate">{currentUser.name}</p>
-              <p className="text-[9px] text-slate-400 font-bold uppercase">{currentUser.role}</p>
-            </div>
+          <div className="space-y-3">
+            <motion.div 
+              whileHover={{ x: 5 }}
+              className="flex items-center space-x-3 p-3 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition-all cursor-default"
+            >
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-black shrink-0 shadow-inner ${
+                currentUser.role === ROLES.TEACHER ? 'bg-slate-100 text-slate-500' :
+                currentUser.gender === 'L' ? 'bg-blue-500 text-white' : 'bg-pink-500 text-white'
+              }`}>
+                {currentUser.name[0]}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-black text-slate-800 truncate leading-none mb-1">{currentUser.name}</p>
+                <div className="flex items-center space-x-1">
+                  <div className={`w-1.5 h-1.5 rounded-full ${currentUser.role === ROLES.TEACHER ? 'bg-emerald-500' : 'bg-indigo-500'}`} />
+                  <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">{currentUser.role}</p>
+                </div>
+              </div>
+            </motion.div>
+
+            <button 
+              onClick={handleLogout} 
+              className="w-full flex items-center justify-center space-x-2 px-4 py-4 text-red-500 font-black uppercase tracking-widest text-[10px] hover:bg-red-50 rounded-2xl transition-all border border-transparent hover:border-red-100"
+            >
+              <LogOut size={14} /><span>Secure Sign Out</span>
+            </button>
           </div>
-          <button 
-            onClick={handleLogout} 
-            className="w-full flex items-center justify-center space-x-2 px-4 py-3 text-red-500 font-black uppercase tracking-widest text-[10px] hover:bg-red-50 rounded-xl transition-all"
-          >
-            <LogOut size={14} /><span>Sign Out</span>
-          </button>
         </div>
       </aside>
 
@@ -686,6 +720,22 @@ export default function App() {
                 
                 <div className="bg-white rounded-[32px] p-8 border border-slate-100 shadow-sm">
                   <textarea value={answerText} onChange={e => setAnswerText(e.target.value)} className="w-full p-4 bg-slate-50 rounded-2xl outline-none min-h-[120px] focus:ring-2 ring-indigo-500/20" placeholder="Contribute your knowledge..." />
+                  {MATH_SUBJECTS.includes(viewingQuestion.subject) && (
+                    <div className="flex flex-wrap gap-2 mb-3 p-2 bg-slate-50 rounded-xl">
+                      {MATH_SYMBOLS.map(sym => (
+                        <button key={sym} type="button" onClick={() => insertSymbol(answerTextRef, sym, setAnswerText)} className="px-3 py-1 bg-white border border-slate-200 rounded-lg hover:bg-indigo-50 hover:text-indigo-600 font-bold transition-all shadow-sm text-sm">
+                          {sym}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  <textarea 
+                    ref={answerTextRef}
+                    value={answerText} 
+                    onChange={e => setAnswerText(e.target.value)} 
+                    className="w-full p-4 bg-slate-50 rounded-2xl outline-none min-h-[120px] focus:ring-2 ring-indigo-500/20" 
+                    placeholder="Contribute your knowledge..." 
+                  />
                   <button onClick={handlePostAnswer} className="mt-4 px-8 py-4 bg-indigo-600 text-white rounded-2xl font-black uppercase text-xs shadow-lg shadow-indigo-200">Publish Answer</button>
                 </div>
               </div>
@@ -777,6 +827,25 @@ export default function App() {
                 </div>
                 <input type="text" value={newPostTitle} onChange={e => setNewPostTitle(e.target.value)} className="w-full p-4 bg-slate-50 rounded-2xl font-bold outline-none border-none" placeholder="Catchy title..." required />
                 <textarea value={newPostContent} onChange={e => setNewPostContent(e.target.value)} className="w-full p-4 bg-slate-50 rounded-2xl min-h-[120px] outline-none border-none" placeholder="Provide details, steps, or context..." required />
+                
+                {MATH_SUBJECTS.includes(newPostSubject) && (
+                  <div className="flex flex-wrap gap-2 p-2 bg-slate-50 rounded-xl">
+                    {MATH_SYMBOLS.map(sym => (
+                      <button key={sym} type="button" onClick={() => insertSymbol(postContentRef, sym, setNewPostContent)} className="px-3 py-1 bg-white border border-slate-200 rounded-lg hover:bg-indigo-50 hover:text-indigo-600 font-bold transition-all shadow-sm text-sm">
+                        {sym}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                <textarea 
+                  ref={postContentRef}
+                  value={newPostContent} 
+                  onChange={e => setNewPostContent(e.target.value)} 
+                  className="w-full p-4 bg-slate-50 rounded-2xl min-h-[120px] outline-none border-none" 
+                  placeholder="Provide details, steps, or context..." 
+                  required 
+                />
                 <div className="flex space-x-4">
                   <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-4 bg-slate-100 rounded-2xl font-bold hover:bg-slate-200 transition-colors">Cancel</button>
                   <motion.button 
