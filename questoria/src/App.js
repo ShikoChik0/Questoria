@@ -18,14 +18,141 @@ const SUBJECTS = [
 const ROLES = { TEACHER: 'teacher', STUDENT: 'student' };
 
 const STUDENT_DB = [
-  { id: 's1', name: 'admins', password: 'admins', class: 'Grade 11 - Alpha' },
-  { id: 's2', name: 'Bob Johnson', password: 'learning000', class: 'Grade 11 - Alpha' },
-  { id: 's3', name: 'Charlie Brown', password: 'password1', class: 'Grade 10 - Beta' }
+  { id: 's1', nis: '8255', fullName: 'ABIFAEYZA MUHAMMAD DYAURRAHMAN', password: '8255', gender: 'L', class: 'XI 3' },
+  { id: 's2', nis: '8257', fullName: 'ABIYYU NAUFAL ZAKY ASNAR', password: '8257', gender: 'L', class: 'XI 3' },
+  { id: 's3', nis: '8273', fullName: 'AISYAH ZAHIRA', password: '8273', gender: 'P', class: 'XI 3' },
+  { id: 's4', nis: '8566', fullName: 'ALDO VANTINALDO', password: '8566', gender: 'L', class: 'XI 3' },
+  { id: 's5', nis: '8290', fullName: 'ANANTA PRATAMA', password: '8290', gender: 'L', class: 'XI 3' },
+  { id: 's6', nis: '8296', fullName: 'ANISAH PRATIWI', password: '8296', gender: 'P', class: 'XI 3' },
+  { id: 's7', nis: '8315', fullName: 'BACHRALFRIDHO REYSHADIN ILMAN', password: '8315', gender: 'L', class: 'XI 3' },
+  { id: 's8', nis: '8317', fullName: 'BENI RAIHAN ADRIANSYAH', password: '8317', gender: 'L', class: 'XI 3' },
+  { id: 's9', nis: '8338', fullName: 'DEA KAHAYA AISHAWA', password: '8338', gender: 'P', class: 'XI 3' },
+  { id: 's10', nis: '8346', fullName: 'DIRGAHAYU RISKA RAMADANI', password: '8346', gender: 'P', class: 'XI 3' },
+  { id: 's11', nis: '8365', fullName: 'FAWWAZKA FALAJ WAHANDY', password: '8365', gender: 'L', class: 'XI 3' },
+  { id: 's12', nis: '8374', fullName: 'GALUH AVRIL DINDA ZASKIA', password: '8374', gender: 'P', class: 'XI 3' },
+  { id: 's13', nis: '8387', fullName: 'JOSEPH KENZIE SURYA WIJAYA', password: '8387', gender: 'L', class: 'XI 3' },
+  { id: 's14', nis: '8404', fullName: 'LIVINA MARIA ASHRAEL', password: '8404', gender: 'P', class: 'XI 3' },
+  { id: 's15', nis: '8406', fullName: 'M. AHNAF RAMADHANI', password: '8406', gender: 'L', class: 'XI 3' },
+  { id: 's16', nis: '8426', fullName: 'MOCHAMAD NURIL MAHMUDI AL TAZAM BILLAH', password: '8426', gender: 'L', class: 'XI 3' },
+  { id: 's17', nis: '8433', fullName: 'MOHAMMAD ADAM RAYLIANSYAH', password: '8433', gender: 'L', class: 'XI 3' },
+  { id: 's18', nis: '8439', fullName: 'MUHAMMAD ALDO RIZQIANSYAH', password: '8439', gender: 'L', class: 'XI 3' },
+  { id: 's19', nis: '8450', fullName: 'MUHAMMAD HENDRIK.A.P', password: '8450', gender: 'L', class: 'XI 3' },
+  { id: 's20', nis: '8571', fullName: 'MUHAMMAD IZZULIL HAQ', password: '8571', gender: 'L', class: 'XI 3' },
+  { id: 's21', nis: '8461', fullName: 'MUHAMMAD SYAUQIL JINAN', password: '8461', gender: 'L', class: 'XI 3' },
+  { id: 's22', nis: '8462', fullName: 'MUHAMMAD WAHYU AL AKBAR', password: '8462', gender: 'L', class: 'XI 3' },
+  { id: 's23', nis: '8464', fullName: 'MUKHAMMAD RIZQI YAHYA', password: '8464', gender: 'L', class: 'XI 3' },
+  { id: 's24', nis: '8476', fullName: 'NAVISYA AURA MADA', password: '8476', gender: 'P', class: 'XI 3' },
+  { id: 's25', nis: '8483', fullName: 'NESSA ACHDIA MAGDALENA TUNGGADEWI', password: '8483', gender: 'P', class: 'XI 3' },
+  { id: 's26', nis: '8573', fullName: 'OCTAVIAN AMRULLAH', password: '8573', gender: 'L', class: 'XI 3' },
+  { id: 's27', nis: '8513', fullName: 'REIVALDIANO BINTANG MAHARDIKA', password: '8513', gender: 'L', class: 'XI 3' },
+  { id: 's28', nis: '8516', fullName: 'REVANO ARDIANSA PUTRA RAMADANI', password: '8516', gender: 'L', class: 'XI 3' },
+  { id: 's29', nis: '8519', fullName: 'RIFQI ATHALLAH SYAH', password: '8519', gender: 'L', class: 'XI 3' },
+  { id: 's30', nis: '8522', fullName: 'RIZA AKBAR ALMUQSITH', password: '8522', gender: 'L', class: 'XI 3' },
+  { id: 's31', nis: '8524', fullName: 'RIZKI ANDI ABDILLAH', password: '8524', gender: 'L', class: 'XI 3' },
+  { id: 's32', nis: '8530', fullName: 'SALSA BIEANKA FEBITAMA', password: '8530', gender: 'P', class: 'XI 3' },
+  { id: 's33', nis: '8544', fullName: 'TIARA VIONA VIRDAUS', password: '8544', gender: 'P', class: 'XI 3' },
+  { id: 's34', nis: '8559', fullName: 'YOSSI AMRU AT-TAUFIK', password: '8559', gender: 'L', class: 'XI 3' },
+  { id: 's35', nis: '8562', fullName: 'ZALFA NAIDIA NATASYA', password: '8562', gender: 'P', class: 'XI 3' },
+  { id: 's36', nis: '8576', fullName: 'ZASKIA FAIDA AZMI', password: '8576', gender: 'P', class: 'XI 3' },
+  { id: 's37', nis: '8258', fullName: 'ACHMAD FAUZAN DWI GHAZALAH', password: '8258', gender: 'L', class: 'XI 4' },
+  { id: 's38', nis: '8262', fullName: 'ADINDA LAILATUZ ZUHRO', password: '8262', gender: 'P', class: 'XI 4' },
+  { id: 's39', nis: '8268', fullName: 'AHMAD ELMAN NAFI GUNARTO', password: '8268', gender: 'L', class: 'XI 4' },
+  { id: 's40', nis: '8292', fullName: 'ANGGA RIZKY PUTRA SETIAWAN', password: '8292', gender: 'L', class: 'XI 4' },
+  { id: 's41', nis: '8301', fullName: 'ARKA DAEGAL ATMA JAYA', password: '8301', gender: 'L', class: 'XI 4' },
+  { id: 's42', nis: '8313', fullName: 'AZIZ AHMAD MUDHAKAR', password: '8313', gender: 'L', class: 'XI 4' },
+  { id: 's43', nis: '8314', fullName: 'AZLAN RIZQI FEBRIANSYAH', password: '8314', gender: 'L', class: 'XI 4' },
+  { id: 's44', nis: '8319', fullName: 'BIANCHA VALENCIA ARIFIZANTY.P', password: '8319', gender: 'P', class: 'XI 4' },
+  { id: 's45', nis: '8325', fullName: 'CATRIN AYU MAHESYA', password: '8325', gender: 'P', class: 'XI 4' },
+  { id: 's46', nis: '8326', fullName: 'CHALLYSTA ZABANIYAH HOSHI SUSISCO', password: '8326', gender: 'P', class: 'XI 4' },
+  { id: 's47', nis: '8327', fullName: 'CHAREN VERONICA KUSUMA', password: '8327', gender: 'P', class: 'XI 4' },
+  { id: 's48', nis: '8334', fullName: 'DAHANA SAIKATZU ALBARIZY', password: '8334', gender: 'L', class: 'XI 4' },
+  { id: 's49', nis: '8337', fullName: 'DAVIN DWI DARMA', password: '8337', gender: 'L', class: 'XI 4' },
+  { id: 's50', nis: '8341', fullName: 'DEVANDIO RIDHO AL KHAFIDZ', password: '8341', gender: 'L', class: 'XI 4' },
+  { id: 's51', nis: '8352', fullName: 'ELFITRI SUGI PRIHATI', password: '8352', gender: 'P', class: 'XI 4' },
+  { id: 's52', nis: '8381', fullName: 'ISLAUKHA NUZRILIA', password: '8381', gender: 'P', class: 'XI 4' },
+  { id: 's53', nis: '8407', fullName: 'M. ABYAZ MAULIDI AL BALAWI', password: '8407', gender: 'L', class: 'XI 4' },
+  { id: 's54', nis: '8429', fullName: 'MOCHAMMAD IBNU AHLUL A\'FA', password: '8429', gender: 'L', class: 'XI 4' },
+  { id: 's55', nis: '8435', fullName: 'MUHAMAD SYIAM SEPTIAN SYAH', password: '8435', gender: 'L', class: 'XI 4' },
+  { id: 's56', nis: '8444', fullName: 'MUHAMMAD FACHRI AR RASYID', password: '8444', gender: 'L', class: 'XI 4' },
+  { id: 's57', nis: '8447', fullName: 'MUHAMMAD FATHIR AFZA ANWAR', password: '8447', gender: 'L', class: 'XI 4' },
+  { id: 's58', nis: '8452', fullName: 'MUHAMMAD IRFAN', password: '8452', gender: 'L', class: 'XI 4' },
+  { id: 's59', nis: '8455', fullName: 'MUHAMMAD RAGAN ENGGRIYANG', password: '8455', gender: 'L', class: 'XI 4' },
+  { id: 's60', nis: '8456', fullName: 'MUHAMMAD RIFKY ARIFUDIN', password: '8456', gender: 'L', class: 'XI 4' },
+  { id: 's61', nis: '8458', fullName: 'MUHAMMAD SATRIA MAULANA', password: '8458', gender: 'L', class: 'XI 4' },
+  { id: 's62', nis: '8471', fullName: 'NAJWA ANINDYA BILQIS RIZKIYUDIN', password: '8471', gender: 'P', class: 'XI 4' },
+  { id: 's63', nis: '8477', fullName: 'NAYAKA MAULANA AZKA SYARIF', password: '8477', gender: 'L', class: 'XI 4' },
+  { id: 's64', nis: '8485', fullName: 'NIKMA FATIHAH OCEAN HANANI', password: '8485', gender: 'P', class: 'XI 4' },
+  { id: 's65', nis: '8493', fullName: 'NURUS SA\'IIDATUL HAQIQI', password: '8493', gender: 'P', class: 'XI 4' },
+  { id: 's66', nis: '8502', fullName: 'RAFAEL ANGGORO', password: '8502', gender: 'L', class: 'XI 4' },
+  { id: 's67', nis: '8505', fullName: 'RAHARDIAN PUTRA RAYA ALBANI', password: '8505', gender: 'L', class: 'XI 4' },
+  { id: 's68', nis: '8509', fullName: 'RASYA ISLAMI HEPPY PRATAMA', password: '8509', gender: 'L', class: 'XI 4' },
+  { id: 's69', nis: '8517', fullName: 'REZA TANGGUH SAGARA', password: '8517', gender: 'L', class: 'XI 4' },
+  { id: 's70', nis: '8534', fullName: 'SEVILLA MAHARANI', password: '8534', gender: 'P', class: 'XI 4' },
+  { id: 's71', nis: '8548', fullName: 'VANIA EKA AMANDA PUTRI', password: '8548', gender: 'P', class: 'XI 4' },
+  { id: 's72', nis: '8553', fullName: 'WHISNU ADI PRASETYO', password: '8553', gender: 'L', class: 'XI 4' }
 ];
 
 const TEACHER_DB = [
-  { id: 't1', name: 'tch', password: 'tch', class: 'Grade 11 - Alpha' },
-  { id: 't2', name: 'Ms. Garcia', password: 'biology456', class: 'Grade 11 - Alpha' }
+  { id: 't1', piagamNumber: '1234/HGN/001', fullName: 'Ahmad, S.Pd. M.T.', password: '001' },
+  { id: 't2', piagamNumber: '1234/HGN/002', fullName: 'Dra. Siti Aminah', password: '002' },
+  { id: 't3', piagamNumber: '1234/HGN/003', fullName: 'Drs. Bambang Suparto', password: '003' },
+  { id: 't4', piagamNumber: '1234/HGN/004', fullName: 'Drs. Nur Slamet M.Pdi', password: '004' },
+  { id: 't5', piagamNumber: '1234/HGN/005', fullName: 'Budi Triono S.Pd.', password: '005' },
+  { id: 't6', piagamNumber: '1234/HGN/006', fullName: 'Iin Winarti S.Pd.', password: '006' },
+  { id: 't7', piagamNumber: '1234/HGN/007', fullName: 'Nur Romlah S.Pd.', password: '007' },
+  { id: 't8', piagamNumber: '1234/HGN/008', fullName: 'Sunardyah Nugraningsih S.Pd', password: '008' },
+  { id: 't9', piagamNumber: '1234/HGN/009', fullName: 'Zulaihah S.Pd', password: '009' },
+  { id: 't10', piagamNumber: '1234/HGN/010', fullName: 'Titik Tustiani S.Pd.', password: '010' },
+  { id: 't11', piagamNumber: '1234/HGN/011', fullName: 'Norhayati S.Pd.', password: '011' },
+  { id: 't12', piagamNumber: '1234/HGN/012', fullName: 'Himawati Adiapsari M.Pd', password: '012' },
+  { id: 't13', piagamNumber: '1234/HGN/013', fullName: 'Ida Nurhayati S.Pd.', password: '013' },
+  { id: 't14', piagamNumber: '1234/HGN/014', fullName: 'Mu’alim S.Pd. M.Pd', password: '014' },
+  { id: 't15', piagamNumber: '1234/HGN/015', fullName: 'Ihdiyati Nurhayinah S.Pd.', password: '015' },
+  { id: 't16', piagamNumber: '1234/HGN/016', fullName: 'Retno Bintarti S.Pd.', password: '016' },
+  { id: 't17', piagamNumber: '1234/HGN/017', fullName: 'Drs. Samsudi M.Kp', password: '017' },
+  { id: 't18', piagamNumber: '1234/HGN/018', fullName: 'Zulkifli Zakaria M.Pd', password: '018' },
+  { id: 't19', piagamNumber: '1234/HGN/019', fullName: 'Drs. Hakim Prayitno', password: '019' },
+  { id: 't20', piagamNumber: '1234/HGN/020', fullName: 'Putut Wahyu Widodo S.Pd. M.Pd', password: '020' },
+  { id: 't21', piagamNumber: '1234/HGN/021', fullName: 'Moh. Ali Wardoyo S.Si', password: '021' },
+  { id: 't22', piagamNumber: '1234/HGN/022', fullName: 'Ika Widyastutik S.Pd', password: '022' },
+  { id: 't23', piagamNumber: '1234/HGN/023', fullName: 'Lukmanuddin A.Md', password: '023' },
+  { id: 't24', piagamNumber: '1234/HGN/024', fullName: 'Drs. Didik Eko Iswahjoedi', password: '024' },
+  { id: 't25', piagamNumber: '1234/HGN/025', fullName: 'Fajar Indra Kurniawan M.Kom', password: '025' },
+  { id: 't26', piagamNumber: '1234/HGN/026', fullName: 'Umi Nuril Arifah S.Si.', password: '026' },
+  { id: 't27', piagamNumber: '1234/HGN/027', fullName: 'Eka Rekatawati S.Pd.', password: '027' },
+  { id: 't28', piagamNumber: '1234/HGN/028', fullName: 'Achmad Rifa\'i S.Pd.', password: '028' },
+  { id: 't29', piagamNumber: '1234/HGN/029', fullName: 'Linda Widyastutik S.Pd.', password: '029' },
+  { id: 't30', piagamNumber: '1234/HGN/030', fullName: 'Indahwati S.Pd.', password: '030' },
+  { id: 't31', piagamNumber: '1234/HGN/031', fullName: 'Ismiatur Rodlijana S.Pd.', password: '031' },
+  { id: 't32', piagamNumber: '1234/HGN/032', fullName: 'Setyo Wawan A S.Pd M.Pd', password: '032' },
+  { id: 't33', piagamNumber: '1234/HGN/033', fullName: 'Drs. Bambang Efendi M.Pd', password: '033' },
+  { id: 't34', piagamNumber: '1234/HGN/034', fullName: 'Tri Endah Ernawati S.Pd', password: '034' },
+  { id: 't35', piagamNumber: '1234/HGN/035', fullName: 'Siti RahayuM.Pd', password: '035' },
+  { id: 't36', piagamNumber: '1234/HGN/036', fullName: 'Emi Nurwahyuningsih S.Pd.M.Pd', password: '036' },
+  { id: 't37', piagamNumber: '1234/HGN/037', fullName: 'Dwi Mei Endrastutik S.Pd', password: '037' },
+  { id: 't38', piagamNumber: '1234/HGN/038', fullName: 'Praneswi Palupita Sari S.Pd', password: '038' },
+  { id: 't39', piagamNumber: '1234/HGN/039', fullName: 'Kristiawan Dwi Cahyono S.Pd. M.Pdi', password: '039' },
+  { id: 't40', piagamNumber: '1234/HGN/040', fullName: 'Fendy Suhartanto S.Pd', password: '040' },
+  { id: 't41', piagamNumber: '1234/HGN/041', fullName: 'Ratna Damayanti Gita R. S.Pd', password: '041' },
+  { id: 't42', piagamNumber: '1234/HGN/042', fullName: 'Anik Noerachini S.Pd', password: '042' },
+  { id: 't43', piagamNumber: '1234/HGN/043', fullName: 'Jhoni Agustiawan Emadeju S.Pd', password: '043' },
+  { id: 't44', piagamNumber: '1234/HGN/044', fullName: 'Nur Ida Ayu Fitriana S.Pd.I', password: '044' },
+  { id: 't45', piagamNumber: '1234/HGN/045', fullName: 'Yulian Nur H. S.Pd', password: '045' },
+  { id: 't46', piagamNumber: '1234/HGN/046', fullName: 'Danar Ilafi S.Pd', password: '046' },
+  { id: 't47', piagamNumber: '1234/HGN/047', fullName: 'Ika Puspita S.Pd', password: '047' },
+  { id: 't48', piagamNumber: '1234/HGN/046', fullName: 'Danar Ilafi S.Pd', password: '046' },
+  { id: 't49', piagamNumber: '1234/HGN/047', fullName: 'Ika Puspita S.Pd', password: '047' },
+  { id: 't50', piagamNumber: '1234/HGN/048', fullName: 'Herman Shalahuddin S.Pd', password: '048' },
+  { id: 't51', piagamNumber: '1234/HGN/049', fullName: 'Achmad Rif\'an Maulana M.Si', password: '049' },
+  { id: 't52', piagamNumber: '1234/HGN/050', fullName: 'Sunariati S.Pd', password: '050' },
+  { id: 't53', piagamNumber: '1234/HGN/051', fullName: 'Fitrya Khoirunnisa S.Pd', password: '051' },
+  { id: 't54', piagamNumber: '1234/HGN/052', fullName: 'Emilda Fajriyah S.P.d', password: '052' },
+  { id: 't55', piagamNumber: '1234/HGN/053', fullName: 'Tantry Padhmasari S.Pd M.Pdi', password: '053' },
+  { id: 't56', piagamNumber: '1234/HGN/054', fullName: 'Ika Widyawati M.Pd', password: '054' },
+  { id: 't57', piagamNumber: '1234/HGN/055', fullName: 'Cynthia Aviva S.Pd', password: '055' },
+  { id: 't58', piagamNumber: '1234/HGN/056', fullName: 'Davin Indra S S.Or', password: '056' },
+  { id: 't59', piagamNumber: '1234/HGN/057', fullName: 'Dra. Zufa Choirunnisak', password: '057' },
+  { id: 't60', piagamNumber: '1234/HGN/058', fullName: 'Achmad sarief Yusuf S.Pd', password: '058' }
 ];
 
 const INITIAL_QUESTIONS = [
@@ -47,7 +174,7 @@ const INITIAL_QUESTIONS = [
     title: 'Cell Mitosis Phases Quiz',
     content: 'Identify the phase where chromosomes align at the equator.',
     subject: 'BIOLOGI',
-    author: 'tch',
+    author: 'Ahmad, S.Pd. M.T.',
     authorId: 't1',
     createdAt: new Date(Date.now() - 7200000).toISOString(),
     votes: 5,
@@ -93,12 +220,10 @@ export default function App() {
     if (!currentUser) return { asked: 0, answered: 0, verified: 0 };
     
     if (currentUser.role === ROLES.TEACHER) {
-      // Teacher stats: Class-wide overview (No verified count per request)
-      const classQuestions = questions.filter(q => q.className === currentUser.className);
-      const classAnswers = answers.filter(a => questions.find(q => q.id === a.questionId)?.className === currentUser.className);
+      // Teacher stats: Platform-wide overview
       return { 
-        asked: classQuestions.length, 
-        answered: classAnswers.length 
+        asked: questions.length, 
+        answered: answers.length 
       };
     } else {
       // Student stats: Personal activity
@@ -117,17 +242,20 @@ export default function App() {
     e.preventDefault();
     setLoginError('');
     const database = loginRole === ROLES.TEACHER ? TEACHER_DB : STUDENT_DB;
-    const userMatch = database.find(u => u.name === username && u.password === password);
+    const loginField = loginRole === ROLES.TEACHER ? 'piagamNumber' : 'nis';
+    const userMatch = database.find(u => u[loginField] === username && u.password === password);
 
     if (userMatch) {
       setCurrentUser({
         id: userMatch.id,
-        name: userMatch.name,
+        name: userMatch.fullName,
         role: loginRole,
-        className: userMatch.class
+        gender: loginRole === ROLES.STUDENT ? userMatch.gender : null,
+        className: loginRole === ROLES.TEACHER ? 'All Classes' : userMatch.class
       });
     } else {
-      setLoginError(`Invalid credentials for the ${loginRole} portal.`);
+      const fieldLabel = loginRole === ROLES.TEACHER ? 'Piagam Number' : 'NIS';
+      setLoginError(`Invalid ${fieldLabel} or password for the ${loginRole} portal.`);
     }
   };
 
@@ -151,7 +279,7 @@ export default function App() {
       authorId: currentUser.id,
       createdAt: new Date().toISOString(),
       votes: 0,
-      className: currentUser.className
+      className: currentUser.role === ROLES.TEACHER ? 'All Classes' : currentUser.className
     };
     setQuestions([newPost, ...questions]);
     setIsModalOpen(false);
@@ -205,7 +333,10 @@ export default function App() {
                             q.content.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesSubject = selectedSubject === 'All' || q.subject === selectedSubject;
       const matchesType = q.type === activeTab;
-      const matchesClass = q.className === currentUser?.className;
+      // Teachers see everything; Students see their class or global posts
+      const matchesClass = currentUser?.role === ROLES.TEACHER || 
+                           q.className === currentUser?.className ||
+                           q.className === 'All Classes';
       return matchesSearch && matchesSubject && matchesType && matchesClass;
     });
   }, [questions, searchQuery, selectedSubject, activeTab, currentUser]);
@@ -282,7 +413,9 @@ export default function App() {
               <h2 className="text-2xl font-black text-slate-800 capitalize mb-6">{loginRole} Login</h2>
               <form onSubmit={handleLoginSubmit} className="space-y-5">
                 <div>
-                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Username</label>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">
+                    {loginRole === ROLES.STUDENT ? 'NIS' : 'Piagam Number'}
+                  </label>
                   <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl outline-none" required />
                 </div>
                 <div>
@@ -375,7 +508,11 @@ export default function App() {
           </div>
 
           <div className="flex items-center space-x-3 p-3 rounded-2xl bg-white border border-slate-200 shadow-sm">
-            <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 font-bold shrink-0">{currentUser.name[0]}</div>
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold shrink-0 ${
+              currentUser.role === ROLES.TEACHER ? 'bg-slate-100 text-slate-400' :
+              currentUser.gender === 'L' ? 'bg-blue-100 text-blue-600' : 'bg-pink-100 text-pink-600'
+            }`}>
+              {currentUser.name[0]}</div>
             <div className="min-w-0">
               <p className="text-xs font-black truncate">{currentUser.name}</p>
               <p className="text-[9px] text-slate-400 font-bold uppercase">{currentUser.role}</p>
@@ -413,7 +550,16 @@ export default function App() {
           </div>
         </header>
 
-        <div className="p-8">
+        {/* AnimatePresence for tab content */}
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={activeTab} // Key changes when activeTab changes, triggering exit/enter animations
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="p-8 flex-1" // Ensure it takes up space and allows flex-1 to work
+          >
           {viewingQuestion ? (
             <div className="max-w-4xl mx-auto">
               <button onClick={() => setViewingQuestion(null)} className="flex items-center text-slate-500 font-bold text-sm mb-6"><ArrowLeft size={18} className="mr-2" /> Back</button>
@@ -523,7 +669,8 @@ export default function App() {
               </motion.div>
             </div>
           )}
-        </div>
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       {}
