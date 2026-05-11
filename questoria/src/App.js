@@ -1,10 +1,10 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  User, LayoutDashboard, ChevronRight, ArrowLeft,
-  LogOut, MessageSquare, BookOpen, 
-  Search, PlusCircle, Trash2, CheckCircle,
-  Hash, CheckSquare
+  User, LayoutDashboard, ChevronRight, ArrowLeft, 
+  LogOut, MessageSquare, BookOpen, Menu, X, // Added Menu and X icons
+  Search, PlusCircle, Trash2, CheckCircle, 
+  Hash, CheckSquare,
 } from 'lucide-react';
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, onSnapshot, query, orderBy} from "firebase/firestore";
@@ -23,7 +23,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const SUBJECTS = [
-  "PENDIDIKAN AGAMA", "PENDIDIKAN PANCASILA", "BAHASA INDONESIA", 
+  "PENDIDIKAN AGAMA", "PENDIDIKAN PANCASILA", "BAHASA INDONESIA",
   "MATEMATIKA", "BAHASA INGGRIS", "PENJASORKES", "SEJARAH", 
   "SENI BUDAYA", "MULOK (BAHASA JAWA)", "BIOLOGI", "FISIKA", 
   "KIMIA", "MATEMATIKA TK. LANJUT", "PRAKARYA", "INFORMATIKA", 
@@ -219,6 +219,7 @@ export default function App() {
   const [newPostContent, setNewPostContent] = useState('');
   const [newPostSubject, setNewPostSubject] = useState(SUBJECTS[0]);
   const [answerText, setAnswerText] = useState('');
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false); // State for mobile sidebar
 
   // Real-time synchronization with Firestore
   useEffect(() => {
@@ -379,15 +380,15 @@ export default function App() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-md w-full bg-[#f8fafc] rounded-[40px] shadow-2xl p-10 border border-white/50 relative overflow-hidden">
+          className="max-w-md w-full bg-[#f8fafc] rounded-[40px] shadow-2xl p-6 sm:p-10 border border-white/50 relative overflow-hidden">
           <AnimatePresence mode="wait">
             {loginStep === 'selection' ? (
             <motion.div 
-              key="selection"
+              key="selection" 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
-              className="text-center space-y-8">
+              className="text-center space-y-6 sm:space-y-8">
               <div className="flex justify-center">
                 <div className="flex flex-col items-center space-y-2">
                   <img 
@@ -399,7 +400,7 @@ export default function App() {
               </div>
 
               <div className="space-y-4">
-                <motion.button 
+                <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => { setLoginRole(ROLES.STUDENT); setLoginStep('login'); }}
@@ -413,7 +414,7 @@ export default function App() {
                   <ChevronRight size={20} className="text-slate-300" />
                 </motion.button>
 
-                <motion.button 
+                <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => { setLoginRole(ROLES.TEACHER); setLoginStep('login'); }}
@@ -471,33 +472,68 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex">
+      {/* Mobile Sidebar Backdrop */}
+      <AnimatePresence>
+        {isMobileSidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsMobileSidebarOpen(false)}
+            className="fixed inset-0 bg-slate-900/40 z-40 lg:hidden"
+          />
+        )}
+      </AnimatePresence>
+
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-slate-200 hidden lg:flex flex-col sticky top-0 h-screen">
-        <div className="p-6 overflow-y-auto flex-1">
-          <div className="flex items-center space-x-3 mb-10">
+      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 flex-col transition-transform duration-300 ease-in-out ${isMobileSidebarOpen ? 'translate-x-0 flex' : '-translate-x-full hidden'} lg:flex lg:relative lg:translate-x-0`}>
+        <div className="p-6 overflow-y-auto flex-1 flex flex-col">
+          {/* Mobile Close Button and Logo */}
+          <div className="flex items-center justify-between lg:hidden mb-6">
+            <div className="flex items-center space-x-3">
+              <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain" />
+              <span className="text-xl font-black tracking-tight">Questoria</span>
+            </div>
+            <button onClick={() => setIsMobileSidebarOpen(false)} className="p-2 text-slate-500 hover:text-red-500">
+              <X size={24} />
+            </button>
+          </div>
+          {/* Desktop Logo */}
+          <div className="hidden lg:flex items-center space-x-3 mb-10">
             <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain" />
             <span className="text-xl font-black tracking-tight">Questoria</span>
             </div>
 
-          <nav className="space-y-1 mb-8">
-            <motion.button 
-              whileHover={{ x: 4 }}
-              onClick={() => { setActiveTab('forum'); setViewingQuestion(null); }} 
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-2xl font-bold transition-all ${activeTab === 'forum' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-500 hover:bg-slate-50'}`}
-            >
-              <MessageSquare size={20} /><span>Forum</span>
-            </motion.button>
-            <motion.button 
-              whileHover={{ x: 4 }}
-              onClick={() => { setActiveTab('exercise'); setViewingQuestion(null); }} 
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-2xl font-bold transition-all ${activeTab === 'exercise' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-500 hover:bg-slate-50'}`}
-            >
-              <BookOpen size={20} /><span>Exercises</span>
-            </motion.button>
+          <nav className="space-y-1 mb-8 relative">
+            {['forum', 'exercise'].map((tab) => (
+              <motion.button 
+                key={tab}
+                whileHover={{ x: 4 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => { setActiveTab(tab); setViewingQuestion(null); }} 
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-2xl font-bold transition-colors relative ${activeTab === tab ? 'text-indigo-600' : 'text-slate-500 hover:bg-slate-50/50'}`}
+              >
+                {activeTab === tab && (
+                  <motion.div 
+                    layoutId="activeTabNav"
+                    className="absolute inset-0 bg-indigo-50 rounded-2xl -z-10"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+                {tab === 'forum' ? <MessageSquare size={20} /> : <BookOpen size={20} />}
+                <span className="capitalize">{tab}</span>
+              </motion.button>
+            ))}
           </nav>
 
           <div className="mb-10">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 px-4">Subject Filter</p>
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 px-4"
+            >
+              Subject Filter
+            </motion.p>
             <div className="space-y-1">
               <button onClick={() => setSelectedSubject('All')} className={`w-full text-left px-4 py-2 rounded-xl text-sm font-bold ${selectedSubject === 'All' ? 'text-indigo-600 bg-indigo-50/50' : 'text-slate-500'}`}>All Subjects</button>
               {SUBJECTS.slice(0, 8).map(sub => (
@@ -561,7 +597,14 @@ export default function App() {
 
       {}
       <main className="flex-1 flex flex-col min-w-0 overflow-y-auto">
-        <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 sticky top-0 z-10">
+        <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-8 sticky top-0 z-10">
+          {/* Hamburger menu for mobile */}
+          <button
+            onClick={() => setIsMobileSidebarOpen(true)}
+            className="lg:hidden p-2 text-slate-500 hover:text-indigo-600 mr-4"
+          >
+            <Menu size={24} />
+          </button>
           <div className="flex-1 max-w-xl relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
             <input type="text" placeholder="Search concepts..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-12 pr-4 py-3 bg-slate-50 rounded-2xl outline-none font-medium text-sm" />
@@ -590,7 +633,7 @@ export default function App() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="p-8 flex-1" // Ensure it takes up space and allows flex-1 to work
+            className="p-4 sm:p-8 flex-1" // Ensure it takes up space and allows flex-1 to work
           >
           {viewingQuestion ? (
             <div className="max-w-4xl mx-auto">
@@ -656,33 +699,36 @@ export default function App() {
                 </div>
               </div>
 
-              <motion.div layout className="grid gap-6">
-                <AnimatePresence>
-                {filteredQuestions.length > 0 ? filteredQuestions.map((q, index) => (
+              <motion.div layout className="grid gap-6 auto-rows-min">
+                <AnimatePresence mode='popLayout'>
+                {filteredQuestions.length > 0 ? filteredQuestions.map((q) => (
                   <motion.div 
                     key={q.id} 
                     layout
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     onClick={() => setViewingQuestion(q)} 
-                    className="bg-white rounded-[32px] p-8 border border-slate-100 shadow-sm hover:shadow-xl transition-all cursor-pointer group relative">
+                    className="bg-white rounded-[32px] p-8 border border-slate-100 shadow-sm hover:shadow-xl transition-shadow cursor-pointer group relative">
                     {currentUser.role === ROLES.TEACHER && (
                       <button onClick={(e) => handleDeletePost(q.id, e)} className="absolute top-8 right-8 opacity-0 group-hover:opacity-100 p-2 text-slate-300 hover:text-red-500 transition-all">
                         <Trash2 size={18} />
                       </button>
                     )}
                     <span className="px-3 py-1 bg-slate-100 text-slate-500 text-[10px] font-black uppercase rounded-full">{q.subject}</span>
-                    <h3 className="text-xl font-black text-slate-800 mt-3 group-hover:text-indigo-600 transition-colors">{q.title}</h3>
+                    <h3 className="text-xl font-black text-slate-800 mt-3 group-hover:text-indigo-600 transition-all">{q.title}</h3>
                     <p className="text-slate-500 line-clamp-2 mt-2 font-medium">{q.content}</p>
                     <div className="mt-6 flex items-center justify-between pt-6 border-t border-slate-50">
                       <div className="flex items-center space-x-2">
-                        <div className="w-6 h-6 rounded-full bg-slate-50 flex items-center justify-center text-[10px] font-bold">{q.author[0]}</div>
+                        <motion.div whileHover={{ rotate: 15 }} className="w-6 h-6 rounded-full bg-slate-50 flex items-center justify-center text-[10px] font-bold">{q.author[0]}</motion.div>
                         <div className="text-xs font-bold text-slate-400">By {q.author}</div>
                       </div>
                       <div className="flex space-x-4 text-slate-400">
                         <div className="flex items-center space-x-1.5"><MessageSquare size={14} /> <span className="text-xs font-black">{answers.filter(a => a.questionId === q.id).length}</span></div>
-                        {answers.some(a => a.questionId === q.id && a.isVerified) && <CheckCircle size={14} className="text-emerald-500" />}
+                        {answers.some(a => a.questionId === q.id && a.isVerified) && (
+                          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}><CheckCircle size={14} className="text-emerald-500" /></motion.div>
+                        )}
                       </div>
                     </div>
                   </motion.div>
@@ -715,10 +761,11 @@ export default function App() {
             className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4"
           >
             <motion.div 
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              initial={{ scale: 0.8, opacity: 0, y: 40 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="bg-white w-full max-w-lg rounded-[40px] p-10 shadow-2xl"
+              exit={{ scale: 0.8, opacity: 0, y: 40 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="bg-white w-full max-w-lg rounded-[40px] p-6 sm:p-10 shadow-2xl origin-bottom"
             >
               <h2 className="text-2xl font-black mb-8">Create New {activeTab}</h2>
               <form onSubmit={handleCreatePost} className="space-y-6">
