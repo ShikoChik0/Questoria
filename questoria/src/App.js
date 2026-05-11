@@ -3,8 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, LayoutDashboard, ChevronRight, ArrowLeft, 
   LogOut, MessageSquare, BookOpen, Menu, X, // Added Menu and X icons
-  Search, PlusCircle, Trash2, CheckCircle, 
-  Hash, CheckSquare, Sparkles, Award
+  Search, PlusCircle, Trash2, CheckCircle, Sparkles, Award
 } from 'lucide-react';
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, onSnapshot, query, orderBy, addDoc, deleteDoc, doc, updateDoc, serverTimestamp } from "firebase/firestore";
