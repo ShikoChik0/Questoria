@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, LayoutDashboard, ChevronRight, ArrowLeft,
@@ -6,6 +6,21 @@ import {
   Search, PlusCircle, Trash2, CheckCircle,
   Hash, CheckSquare
 } from 'lucide-react';
+import { initializeApp } from "firebase/app";
+import { getFirestore, collection, onSnapshot, query, orderBy} from "firebase/firestore";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAxLyq_H1N35BmQG1izcqAqzSUVsT5M6Mk",
+  authDomain: "questoria-8f0bb.firebaseapp.com",
+  projectId: "questoria-8f0bb",
+  storageBucket: "questoria-8f0bb.firebasestorage.app",
+  messagingSenderId: "430292311030",
+  appId: "1:430292311030:web:11e6f8839a47275e2245d7",
+  measurementId: "G-X73HJ51Q6E"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 const SUBJECTS = [
   "PENDIDIKAN AGAMA", "PENDIDIKAN PANCASILA", "BAHASA INDONESIA", 
@@ -162,23 +177,11 @@ const INITIAL_QUESTIONS = [
     title: 'How to calculate standard deviation?',
     content: 'I am confused about the N-1 vs N in the denominator. When do we use which?',
     subject: 'MATEMATIKA',
-    author: 'admins',
+    author: 'ABIFAEYZA MUHAMMAD DYAURRAHMAN',
     authorId: 's1',
     createdAt: new Date(Date.now() - 3600000).toISOString(),
     votes: 12,
-    className: 'Grade 11 - Alpha'
-  },
-  {
-    id: 'q2',
-    type: 'exercise',
-    title: 'Cell Mitosis Phases Quiz',
-    content: 'Identify the phase where chromosomes align at the equator.',
-    subject: 'BIOLOGI',
-    author: 'Ahmad, S.Pd. M.T.',
-    authorId: 't1',
-    createdAt: new Date(Date.now() - 7200000).toISOString(),
-    votes: 5,
-    className: 'Grade 11 - Alpha'
+    className: 'XI 3'
   }
 ];
 
@@ -187,7 +190,7 @@ const INITIAL_ANSWERS = [
     id: 'a1',
     questionId: 'q1',
     text: 'Use N-1 (Bessel\'s correction) for a sample, and N for the entire population.',
-    author: 'Bob Johnson',
+    author: 'ABIYYU NAUFAL ZAKY ASNAR',
     authorId: 's2',
     isVerified: true,
     votes: 8,
@@ -209,12 +212,41 @@ export default function App() {
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
 
-  const [questions, setQuestions] = useState(INITIAL_QUESTIONS);
-  const [answers, setAnswers] = useState(INITIAL_ANSWERS);
+  const [questions, setQuestions] = useState([]);
+  const [answers, setAnswers] = useState([]);
+
   const [newPostTitle, setNewPostTitle] = useState('');
   const [newPostContent, setNewPostContent] = useState('');
   const [newPostSubject, setNewPostSubject] = useState(SUBJECTS[0]);
   const [answerText, setAnswerText] = useState('');
+
+  // Real-time synchronization with Firestore
+  useEffect(() => {
+    const qQuestions = query(collection(db, "questions"), orderBy("createdAt", "desc"));
+    const unsubscribeQuestions = onSnapshot(qQuestions, (snapshot) => {
+      const questData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate()?.toISOString() || new Date().toISOString()
+      }));
+      setQuestions(questData.length > 0 ? questData : INITIAL_QUESTIONS);
+    });
+
+    const qAnswers = query(collection(db, "answers"), orderBy("createdAt", "asc"));
+    const unsubscribeAnswers = onSnapshot(qAnswers, (snapshot) => {
+      const ansData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate()?.toISOString() || new Date().toISOString()
+      }));
+      setAnswers(ansData.length > 0 ? ansData : INITIAL_ANSWERS);
+    });
+
+    return () => {
+      unsubscribeQuestions();
+      unsubscribeAnswers();
+    };
+  }, []);
 
   const stats = useMemo(() => {
     if (!currentUser) return { asked: 0, answered: 0, verified: 0 };
