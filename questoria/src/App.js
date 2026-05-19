@@ -6,7 +6,7 @@ import {
   Search, PlusCircle, Trash2, CheckCircle, Sparkles, Award
 } from 'lucide-react';
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, onSnapshot, query, orderBy, addDoc, deleteDoc, doc, updateDoc, serverTimestamp } from "firebase/firestore";
+import { getFirestore, collection, onSnapshot, query, orderBy, addDoc, deleteDoc, doc, updateDoc, serverTimestamp, enableIndexedDbPersistence } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAxLyq_H1N35BmQG1izcqAqzSUVsT5M6Mk",
@@ -20,6 +20,16 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+// Enable Offline Persistence: This makes the database work "locally" 
+// while still syncing with the server for other devices.
+enableIndexedDbPersistence(db).catch((err) => {
+    if (err.code === 'failed-precondition') {
+        console.warn("Multiple tabs open, persistence can only be enabled in one tab at a time.");
+    } else if (err.code === 'unimplemented') {
+        console.warn("The current browser does not support persistence.");
+    }
+});
 
 const SUBJECTS = [
   "PENDIDIKAN AGAMA", "PENDIDIKAN PANCASILA", "BAHASA INDONESIA",
@@ -221,20 +231,26 @@ export default function App() {
   useEffect(() => {
     const qQuestions = query(collection(db, "questions"), orderBy("createdAt", "desc"));
     const unsubscribeQuestions = onSnapshot(qQuestions, (snapshot) => {
+      if (snapshot.metadata.fromCache && snapshot.docs.length === 0) return;
+      
       const questData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
-        createdAt: doc.data().createdAt?.seconds ? doc.data().createdAt.toDate().toISOString() : new Date().toISOString()
+        // Fix: serverTimestamp() is null in the local cache until it reaches the server.
+        // This prevents the app from crashing or losing the date on reload.
+        createdAt: doc.data().createdAt?.toDate ? doc.data().createdAt.toDate().toISOString() : new Date().toISOString()
       }));
       setQuestions(questData);
     });
 
     const qAnswers = query(collection(db, "answers"), orderBy("createdAt", "asc"));
     const unsubscribeAnswers = onSnapshot(qAnswers, (snapshot) => {
+      if (snapshot.metadata.fromCache && snapshot.docs.length === 0) return;
+
       const ansData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
-        createdAt: doc.data().createdAt?.seconds ? doc.data().createdAt.toDate().toISOString() : new Date().toISOString()
+        createdAt: doc.data().createdAt?.toDate ? doc.data().createdAt.toDate().toISOString() : new Date().toISOString()
       }));
       setAnswers(ansData);
     });
@@ -312,7 +328,7 @@ export default function App() {
     try {
       await addDoc(collection(db, "questions"), newPost);
       setIsModalOpen(false);
-      setNewPostTitle('');
+      setNewPostTitle(''); 
       setNewPostContent('');
     } catch (error) {
       console.error("Error adding post: ", error);
