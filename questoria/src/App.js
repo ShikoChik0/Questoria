@@ -169,34 +169,6 @@ const TEACHER_DB = [
   { id: 't60', piagamNumber: '1234/HGN/058', fullName: 'Achmad sarief Yusuf S.Pd', password: '058' }
 ];
 
-const INITIAL_QUESTIONS = [
-  {
-    id: 'q1',
-    type: 'forum',
-    title: 'How to calculate standard deviation?',
-    content: 'I am confused about the N-1 vs N in the denominator. When do we use which?',
-    subject: 'MATEMATIKA',
-    author: 'ABIFAEYZA MUHAMMAD DYAURRAHMAN',
-    authorId: 's1',
-    createdAt: new Date(Date.now() - 3600000).toISOString(),
-    votes: 12,
-    className: 'XI 3'
-  }
-];
-
-const INITIAL_ANSWERS = [
-  {
-    id: 'a1',
-    questionId: 'q1',
-    text: 'Use N-1 (Bessel\'s correction) for a sample, and N for the entire population.',
-    author: 'ABIYYU NAUFAL ZAKY ASNAR',
-    authorId: 's2',
-    isVerified: true,
-    votes: 8,
-    createdAt: new Date(Date.now() - 1800000).toISOString(),
-  }
-];
-
 const MATH_SUBJECTS = ["MATEMATIKA", "MATEMATIKA TK. LANJUT"];
 const MATH_SYMBOLS = ['+', '−', '×', '÷', '=', '≠', '±', '√', '²', '³', '^', 'π', '∞', '≤', '≥', '(', ')', '∫', 'Σ', 'lim', '→'];
 
