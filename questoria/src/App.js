@@ -364,7 +364,7 @@ export default function App() {
       
       return matchesSearch && matchesSubject && matchesType;
     });
-  }, [questions, searchQuery, selectedSubject, activeTab, currentUser]);
+  }, [questions, searchQuery, selectedSubject, activeTab]);
 
   if (!currentUser) {
     return (
