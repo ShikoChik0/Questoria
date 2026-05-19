@@ -254,7 +254,7 @@ export default function App() {
         ...doc.data(),
         createdAt: doc.data().createdAt?.toDate()?.toISOString() || new Date().toISOString()
       }));
-      setQuestions(questData.length > 0 ? questData : INITIAL_QUESTIONS);
+      setQuestions(questData);
     });
 
     const qAnswers = query(collection(db, "answers"), orderBy("createdAt", "asc"));
@@ -264,7 +264,7 @@ export default function App() {
         ...doc.data(),
         createdAt: doc.data().createdAt?.toDate()?.toISOString() || new Date().toISOString()
       }));
-      setAnswers(ansData.length > 0 ? ansData : INITIAL_ANSWERS);
+      setAnswers(ansData);
     });
 
     return () => {
@@ -389,11 +389,8 @@ export default function App() {
                             q.content.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesSubject = selectedSubject === 'All' || q.subject === selectedSubject;
       const matchesType = q.type === activeTab;
-      // Teachers see everything; Students see their class or global posts
-      const matchesClass = currentUser?.role === ROLES.TEACHER || 
-                           q.className === currentUser?.className ||
-                           q.className === 'All Classes';
-      return matchesSearch && matchesSubject && matchesType && matchesClass;
+      
+      return matchesSearch && matchesSubject && matchesType;
     });
   }, [questions, searchQuery, selectedSubject, activeTab, currentUser]);
 
@@ -718,7 +715,6 @@ export default function App() {
                 ))}
                 
                 <div className="bg-white rounded-[32px] p-8 border border-slate-100 shadow-sm">
-                  <textarea value={answerText} onChange={e => setAnswerText(e.target.value)} className="w-full p-4 bg-slate-50 rounded-2xl outline-none min-h-[120px] focus:ring-2 ring-indigo-500/20" placeholder="Contribute your knowledge..." />
                   {MATH_SUBJECTS.includes(viewingQuestion.subject) && (
                     <div className="flex flex-wrap gap-2 mb-3 p-2 bg-slate-50 rounded-xl">
                       {MATH_SYMBOLS.map(sym => (
@@ -837,14 +833,6 @@ export default function App() {
                   </div>
                 )}
 
-                <textarea 
-                  ref={postContentRef}
-                  value={newPostContent} 
-                  onChange={e => setNewPostContent(e.target.value)} 
-                  className="w-full p-4 bg-slate-50 rounded-2xl min-h-[120px] outline-none border-none" 
-                  placeholder="Provide details, steps, or context..." 
-                  required 
-                />
                 <div className="flex space-x-4">
                   <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-4 bg-slate-100 rounded-2xl font-bold hover:bg-slate-200 transition-colors">Cancel</button>
                   <motion.button 
