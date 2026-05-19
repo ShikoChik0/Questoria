@@ -224,7 +224,7 @@ export default function App() {
       const questData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate()?.toISOString() || new Date().toISOString()
+        createdAt: doc.data().createdAt?.seconds ? doc.data().createdAt.toDate().toISOString() : new Date().toISOString()
       }));
       setQuestions(questData);
     });
@@ -234,7 +234,7 @@ export default function App() {
       const ansData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate()?.toISOString() || new Date().toISOString()
+        createdAt: doc.data().createdAt?.seconds ? doc.data().createdAt.toDate().toISOString() : new Date().toISOString()
       }));
       setAnswers(ansData);
     });
@@ -309,11 +309,15 @@ export default function App() {
       votes: 0,
       className: currentUser.role === ROLES.TEACHER ? 'All Classes' : currentUser.className
     };
-    
-    await addDoc(collection(db, "questions"), newPost);
-    setIsModalOpen(false);
-    setNewPostTitle('');
-    setNewPostContent('');
+    try {
+      await addDoc(collection(db, "questions"), newPost);
+      setIsModalOpen(false);
+      setNewPostTitle('');
+      setNewPostContent('');
+    } catch (error) {
+      console.error("Error adding post: ", error);
+      alert("Database Error: Could not save post. Check your Firebase Security Rules.");
+    }
   };
 
   const handleDeletePost = async (id, e) => {
@@ -351,8 +355,13 @@ export default function App() {
       votes: 0,
       createdAt: serverTimestamp(),
     };
-    await addDoc(collection(db, "answers"), newAns);
-    setAnswerText('');
+    try {
+      await addDoc(collection(db, "answers"), newAns);
+      setAnswerText('');
+    } catch (error) {
+      console.error("Error adding answer: ", error);
+      alert("Database Error: Could not save answer.");
+    }
   };
 
   const filteredQuestions = useMemo(() => {
@@ -793,7 +802,14 @@ export default function App() {
                   </select>
                 </div>
                 <input type="text" value={newPostTitle} onChange={e => setNewPostTitle(e.target.value)} className="w-full p-4 bg-slate-50 rounded-2xl font-bold outline-none border-none" placeholder="Catchy title..." required />
-                <textarea value={newPostContent} onChange={e => setNewPostContent(e.target.value)} className="w-full p-4 bg-slate-50 rounded-2xl min-h-[120px] outline-none border-none" placeholder="Provide details, steps, or context..." required />
+                <textarea 
+                  ref={postContentRef}
+                  value={newPostContent} 
+                  onChange={e => setNewPostContent(e.target.value)} 
+                  className="w-full p-4 bg-slate-50 rounded-2xl min-h-[120px] outline-none border-none" 
+                  placeholder="Provide details, steps, or context..." 
+                  required 
+                />
                 
                 {MATH_SUBJECTS.includes(newPostSubject) && (
                   <div className="flex flex-wrap gap-2 p-2 bg-slate-50 rounded-xl">
